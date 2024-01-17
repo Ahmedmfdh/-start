@@ -1,0 +1,68 @@
+# MIT License
+#
+# Copyright (c) 2023 AnonymousX1025
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import time
+from datetime import datetime
+
+import psutil
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+
+import config
+from FallenMusic import BOT_NAME, StartTime, app
+from FallenMusic.Helpers import get_readable_time
+
+
+@app.on_message(filters.command("ping") | filters.command(["بنج","البنج"],prefixes= ["/", "!","","#"]))
+async def ping_fallen(_, message: Message):
+    hmm = await message.reply_photo(
+        photo=config.PING_IMG, caption=f"{BOT_NAME} ⚡"
+    )
+    upt = int(time.time() - StartTime)
+    cpu = psutil.cpu_percent(interval=0.5)
+    mem = psutil.virtual_memory().percent
+    disk = psutil.disk_usage("/").percent
+    start = datetime.now()
+    resp = (datetime.now() - start).microseconds / 1000
+    uptime = get_readable_time((upt))
+
+    await hmm.edit_text(
+        f"""⎊ آلبنج : `{resp}ᴍs`
+
+<b><u>{BOT_NAME} آلحآله :</u></b>
+
+⚡️ **مدة التشغيل :** {uptime}
+⚡️ **الرام :** {mem}
+⚡️ **وحدة المعالجة المركزية :** {cpu}
+  ⚡️**القرص :** {disk}""",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("𝗦𝘂𝗽𝗽𝗼𝗿𝘁 𝗚𝗿𝗼𝘂𝗽", url=config.SUPPORT_CHAT),
+                    InlineKeyboardButton(
+                        "𝗦𝗢𝗨𝗥𝗖𝗘 𝗦𝗔𝗞𝗥𝗔𝗡",
+                        url="https://t.me/H_A_S_I_S_A",
+                    ),
+                ],
+            ]
+        ),
+    )
